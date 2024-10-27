@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@components/shared/Form";
 
@@ -23,7 +23,11 @@ const EditPrompt = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    if (!promptId) return alert("Prompt Id not found");
+    if (!promptId) {
+      alert("Prompt ID not found");
+      setSubmitting(false);
+      return;
+    }
     try {
       const response = await fetch(`/api/prompt/${promptId}`, {
         method: "PATCH",
@@ -42,7 +46,6 @@ const EditPrompt = () => {
     }
   };
   return (
-    <Suspense fallback={<div>Loading...</div>}>
       <Form
         type="Edit"
         post={post}
@@ -50,7 +53,6 @@ const EditPrompt = () => {
         submitting={submitting}
         handleSubmit={handleSubmit}
       />
-    </Suspense>
   );
 };
 
