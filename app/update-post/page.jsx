@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Form from "@components/shared/Form";
 
-const EditPrompt = () => {
+// Create a client component that uses the search params
+const EditPromptForm = ({ promptId }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
   const [submitting, setSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
 
@@ -45,15 +44,26 @@ const EditPrompt = () => {
       setSubmitting(false);
     }
   };
+
+  return (
+    <Form
+      type="Edit"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={handleSubmit}
+    />
+  );
+};
+
+// Create a wrapper component that handles the search params
+const EditPrompt = () => {
+  const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={handleSubmit}
-      />
+      <EditPromptForm promptId={promptId} />
     </Suspense>
   );
 };
