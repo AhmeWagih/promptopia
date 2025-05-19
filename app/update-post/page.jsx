@@ -1,71 +1,14 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useRouter } from "next/navigation";
-import Form from "@components/shared/Form";
+import { Suspense } from "react";
+import UpdatePrompt from "@components/shared/UpdatePrompt";
 
-// Create a client component that uses the search params
-const EditPromptForm = ({ promptId }) => {
-  const router = useRouter();
-  const [submitting, setSubmitting] = useState(false);
-  const [post, setPost] = useState({ prompt: "", tag: "" });
-
-  useEffect(() => {
-    const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
-      setPost({ prompt: data.prompt, tag: data.tag });
-    }
-    if (promptId) getPromptDetails();
-  }, [promptId]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    if (!promptId) {
-      alert("Prompt ID not found");
-      setSubmitting(false);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/prompt/${promptId}`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          prompt: post.prompt,
-          tag: post.tag,
-        }),
-      });
-      if (response.ok) {
-        router.push("/");
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={handleSubmit}
-    />
-  );
-};
-
-// Create a wrapper component that handles the search params
-const EditPrompt = () => {
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
-
+const Page = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <EditPromptForm promptId={promptId} />
+      <UpdatePrompt />
     </Suspense>
   );
 };
 
-export default EditPrompt;
+export default Page;
